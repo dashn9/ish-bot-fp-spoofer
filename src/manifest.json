@@ -1,0 +1,26 @@
+{
+    "manifest_version": 3,
+    "name": "Bot Browser Extension",
+    "version": "1.0",
+    "description": "This extention would be primarily used to extend the capabilities of the bot directly on the browser",
+    "permissions": [
+      "activeTab",
+      "scripting"
+    ],
+    "background": {
+      "service_worker": ""
+    },
+    "content_scripts": [
+      {
+        "all_frames": true,
+        "match_about_blank": true,
+        "run_at": "document_start",
+        "matches": ["<all_urls>"],
+        "js": ["fpSpoofer.js"]
+      }
+    ],
+    "host_permissions": [
+      "<all_urls>"
+    ]
+  }
+  

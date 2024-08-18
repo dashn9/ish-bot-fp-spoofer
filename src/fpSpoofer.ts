@@ -38,6 +38,8 @@ var webglParam36349 = 11;
 var webglParam33902 = 12;
 var webglParam33901 = 12;
 var webglParam37446 = "Intel(R) HD Graphics";
+
+console.log('hi')
 var hardwareSpecsInject = function() {
     Object.defineProperty(Navigator.prototype, "deviceMemory", {
         value: hardwareSpecs['memory']
@@ -58,7 +60,7 @@ var browserSpecsInject = function() {
     }
 };
 
-var font_inject = function() {
+var fontInject = function() {
     var rand = {
         noise: function() {
             var SIGN = Math.random() < Math.random() ? -1 : 1;
@@ -89,7 +91,7 @@ var font_inject = function() {
     });
 };
 
-var webgl_inject = function() {
+var webglInject = function() {
     var config = {
         random: {
             value: function() {
@@ -186,7 +188,7 @@ var webgl_inject = function() {
     // document.documentElement.dataset.wgscriptallow = true;
 };
 
-var audiocontext_inject = function() {
+var audiocontextInject = function() {
     const context = {
         BUFFER: null,
         getChannelData: function(e: typeof AudioBuffer | typeof OfflineAudioContext) {
@@ -237,7 +239,7 @@ var audiocontext_inject = function() {
     // document.documentElement.dataset.acxscriptallow = true;
 };
 
-var canvas_inject = function() {
+var canvasInject = function() {
     const toBlob = HTMLCanvasElement.prototype.toBlob;
     const toDataURL = HTMLCanvasElement.prototype.toDataURL;
     const getImageData = CanvasRenderingContext2D.prototype.getImageData;
@@ -294,11 +296,9 @@ var canvas_inject = function() {
 
     // document.documentElement.dataset.cbscriptallow = true;
 };
-
-var script_1 = document.createElement("script");
-script_1.textContent = "(" + canvas_inject + ")();(" + audiocontext_inject + ")();(" + webgl_inject + ")();(" + font_inject + ")();(" + hardwareSpecsInject + ")();(" + browserSpecsInject + ")();";
-document.documentElement.appendChild(script_1);
-if (window.top){
-    window.top.document.documentElement.appendChild(script_1);
-}
-script_1.remove();
+canvasInject();
+audiocontextInject();
+webglInject();
+fontInject();
+hardwareSpecsInject();
+browserSpecsInject();
