@@ -39,35 +39,57 @@ var webglParam33902 = 12;
 var webglParam33901 = 12;
 var webglParam37446 = "Intel(R) HD Graphics";
 
-console.log('hi')
-var hardwareSpecsInject = function() {
-    Object.defineProperty(Navigator.prototype, "deviceMemory", {
-        value: hardwareSpecs['memory']
+var specsInject = function () {
+    const originalDeviceMemoryDescriptor = Object.getOwnPropertyDescriptor(Navigator.prototype, 'deviceMemory');
+    const originalVendorDescriptor = Object.getOwnPropertyDescriptor(Navigator.prototype, 'vendor');
+    const originalRefererDescriptor = Object.getOwnPropertyDescriptor(Document.prototype, 'referer');
+    Object.defineProperty(Navigator.prototype, 'deviceMemory', {
+        get() {
+            return hardwareSpecs['memory']
+        }
     });
-
-    if (referer) {
-        Object.defineProperty(Document.prototype, "referrer", {
-            value: referer
-        });
-    }
-};
-
-var browserSpecsInject = function() {
     if (browserVendor) {
         Object.defineProperty(Navigator.prototype, "vendor", {
-            value: browserVendor
+            get() {
+                return browserVendor
+            }
         });
     }
+    if (referer) {
+        Object.defineProperty(Document.prototype, "referrer", {
+            get() {
+                return referer;
+            }
+        });
+    }
+
+    Object.getOwnPropertyDescriptor = (obj, prop) => {
+        if (obj === Navigator.prototype) {
+            switch (prop) {
+                case 'deviceMemory':
+                    return originalDeviceMemoryDescriptor;
+                case 'vendor':
+                    return originalVendorDescriptor;
+            }
+        } else if (obj === Document.prototype) {
+            switch (prop) {
+                case 'referer':
+                    originalRefererDescriptor
+            }
+        }
+        return Reflect.getOwnPropertyDescriptor(obj, prop);
+    };
+
 };
 
-var fontInject = function() {
+var fontInject = function () {
     var rand = {
-        noise: function() {
+        noise: function () {
             var SIGN = Math.random() < Math.random() ? -1 : 1;
             console.log(Math.floor(Math.random() + SIGN * Math.random()));
             return Math.floor(Math.random() + SIGN * Math.random());
         },
-        sign: function() {
+        sign: function () {
             const tmp = [-1, -1, -1, -1, -1, -1, +1, -1, -1, -1];
             const index = Math.floor(Math.random() * tmp.length);
             return tmp[index];
@@ -91,30 +113,30 @@ var fontInject = function() {
     });
 };
 
-var webglInject = function() {
+var webglInject = function () {
     var config = {
         random: {
-            value: function() {
+            value: function () {
                 return Math.random();
             },
-            item: function(e: any[]) {
+            item: function (e: any[]) {
                 var rand = e.length * config.random.value();
                 return e[Math.floor(rand)];
             },
-            number: function(power: [number] | number) {
+            number: function (power: [number] | number) {
                 if (Array.isArray(power)) {
                     return Math.pow(2, config.random.item(power));
                 }
                 return Math.pow(2, power);
             },
-            int: function(power: [Int32Array] | number) {
+            int: function (power: [Int32Array] | number) {
                 if (Array.isArray(power)) {
                     // @ts-ignore
                     return config.random.item(power.map(p => new Int32Array([Math.pow(2, p), Math.pow(2, p)])));
                 }
                 return new Int32Array([Math.pow(2, power), Math.pow(2, power)]);
             },
-            float: function(power: [Float32Array] | number) {
+            float: function (power: [Float32Array] | number) {
                 if (Array.isArray(power)) {
                     // @ts-ignore
                     return config.random.item(power.map(p => new Float32Array([1, Math.pow(2, p)])));
@@ -124,12 +146,11 @@ var webglInject = function() {
         },
         spoof: {
             webgl: {
-                buffer: function(target: typeof WebGLRenderingContext | typeof WebGL2RenderingContext) {
-                    // @ts-ignore
-                    var proto = target.prototype || target.__proto__;
+                buffer: function (target: typeof WebGLRenderingContext | typeof WebGL2RenderingContext) {
+                    var proto = target.prototype;
                     const bufferData = proto.bufferData;
                     Object.defineProperty(proto, "bufferData", {
-                        value: function() {
+                        value: function () {
                             if (Math.min(...arguments[1]) >= 0 && arguments[1].constructor == Float32Array) {
                                 var index = Math.floor(webglValueIndexSeed * arguments[1].length);
                                 var noise = 0.1 * webglValueOffset;
@@ -140,12 +161,11 @@ var webglInject = function() {
                         }
                     });
                 },
-                parameter: function(target: typeof WebGLRenderingContext | typeof WebGL2RenderingContext) {
-                    // @ts-ignore
-                    var proto = target.prototype || target.__proto__;
+                parameter: function (target: typeof WebGLRenderingContext | typeof WebGL2RenderingContext) {
+                    var proto = target.prototype;
                     const getParameter = proto.getParameter;
                     Object.defineProperty(proto, "getParameter", {
-                        value: function() {
+                        value: function () {
                             switch (arguments[0]) {
                                 case 3415: return 0;
                                 case 3414: return 24;
@@ -188,14 +208,14 @@ var webglInject = function() {
     // document.documentElement.dataset.wgscriptallow = true;
 };
 
-var audiocontextInject = function() {
+var audiocontextInject = function () {
     const context = {
         BUFFER: null,
-        getChannelData: function(e: typeof AudioBuffer | typeof OfflineAudioContext) {
+        getChannelData: function (e: typeof AudioBuffer | typeof OfflineAudioContext) {
             // @ts-ignore
             const getChannelData = e.prototype.getChannelData;
             Object.defineProperty(e.prototype, "getChannelData", {
-                value: function() {
+                value: function () {
                     //@ts-ignore
                     const results = getChannelData.apply(this, arguments);
                     if (context.BUFFER !== results) {
@@ -210,16 +230,16 @@ var audiocontextInject = function() {
                 }
             });
         },
-        createAnalyser: function(e: typeof AudioContext | typeof OfflineAudioContext) {
+        createAnalyser: function (e: typeof AudioContext | typeof OfflineAudioContext) {
             // @ts-ignore
             const createAnalyser = e.prototype.__proto__.createAnalyser;
             // @ts-ignore
             Object.defineProperty(e.prototype.__proto__, "createAnalyser", {
-                value: function() {
+                value: function () {
                     const results = createAnalyser.apply(this, arguments);
                     const getFloatFrequencyData = results.__proto__.getFloatFrequencyData;
                     Object.defineProperty(results.__proto__, "getFloatFrequencyData", {
-                        value: function() {
+                        value: function () {
                             for (var i = 0; i < arguments[0].length; i += 100) {
                                 let index = Math.floor(audioContextOffset * i);
                                 arguments[0][index] += audioContextOffset * 0.1;
@@ -239,12 +259,12 @@ var audiocontextInject = function() {
     // document.documentElement.dataset.acxscriptallow = true;
 };
 
-var canvasInject = function() {
+var canvasInject = function () {
     const toBlob = HTMLCanvasElement.prototype.toBlob;
     const toDataURL = HTMLCanvasElement.prototype.toDataURL;
     const getImageData = CanvasRenderingContext2D.prototype.getImageData;
 
-    var noisify = function(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
+    var noisify = function (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
         if (context) {
             const shift = {
                 r: Math.floor(canvasOffsetRed),
@@ -271,7 +291,7 @@ var canvasInject = function() {
     };
 
     Object.defineProperty(HTMLCanvasElement.prototype, "toBlob", {
-        value: function() {
+        value: function () {
             noisify(this, this.getContext("2d"));
             // @ts-ignore
             return toBlob.apply(this, arguments);
@@ -279,7 +299,7 @@ var canvasInject = function() {
     });
 
     Object.defineProperty(HTMLCanvasElement.prototype, "toDataURL", {
-        value: function() {
+        value: function () {
             noisify(this, this.getContext("2d"));
             // @ts-ignore
             return toDataURL.apply(this, arguments);
@@ -287,7 +307,7 @@ var canvasInject = function() {
     });
 
     Object.defineProperty(CanvasRenderingContext2D.prototype, "getImageData", {
-        value: function() {
+        value: function () {
             noisify(this.canvas, this);
             // @ts-ignore
             return getImageData.apply(this, arguments);
@@ -300,5 +320,4 @@ canvasInject();
 audiocontextInject();
 webglInject();
 fontInject();
-hardwareSpecsInject();
-browserSpecsInject();
+specsInject();
