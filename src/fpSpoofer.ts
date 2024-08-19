@@ -13,7 +13,7 @@ var browserVendor = '';
 var fontHeightOffset = 0;
 var fontWidthOffset = 0;
 
-var canvasOffsetRed = 0, canvasOffsetGreen = 0, canvasOffsetBlue = 0, canvasOffsetAlpha = 0;
+var canvasOffsetRed = 0, canvasOffsetGreen = 0, canvasOffsetBlue = 1, canvasOffsetAlpha = 0;
 
 var webglValueIndexSeed = 0.234567654, webglValueOffset = 0.05;
 
@@ -39,6 +39,16 @@ var webglParam33902 = 12;
 var webglParam33901 = 12;
 var webglParam37446 = "Intel(R) HD Graphics";
 
+function hashArrayTo255(array: Uint8ClampedArray) {
+    let hash = 0;
+
+    for (let i = 0; i < array.length; i++) {
+        const element = array[i];
+        hash = (hash + element * (i + 1)) % 256;
+    }
+
+    return hash;
+}
 var specsInject = function () {
     const originalDeviceMemoryDescriptor = Object.getOwnPropertyDescriptor(Navigator.prototype, 'deviceMemory');
     const originalVendorDescriptor = Object.getOwnPropertyDescriptor(Navigator.prototype, 'vendor');
@@ -86,7 +96,6 @@ var fontInject = function () {
     var rand = {
         noise: function () {
             var SIGN = Math.random() < Math.random() ? -1 : 1;
-            console.log(Math.floor(Math.random() + SIGN * Math.random()));
             return Math.floor(Math.random() + SIGN * Math.random());
         },
         sign: function () {
@@ -264,6 +273,75 @@ var canvasInject = function () {
     const toDataURL = HTMLCanvasElement.prototype.toDataURL;
     const getImageData = CanvasRenderingContext2D.prototype.getImageData;
 
+    const originalToBlobDescriptor = Object.getOwnPropertyDescriptor(HTMLCanvasElement.prototype, 'toBlob');
+    const originalToDataURLDescriptor = Object.getOwnPropertyDescriptor(HTMLCanvasElement.prototype, 'toDataURL');
+    const originalGetImageDataDescriptor = Object.getOwnPropertyDescriptor(CanvasRenderingContext2D.prototype, 'getImageData');
+
+    var markCanvas = function (imageData: ImageData, height: number, width: number) {
+        for (let i = 0; i < height; i++) {
+            for (let j = 0; j < width; j++) {
+                const n = ((i * (width * 4)) + (j * 4));
+                if (imageData.data[n + 0] > 0 && imageData.data[n + 0] < 255) {
+                    console.log('marked it here', i, j, imageData.data[n + 0]);
+                    imageData.data[n + 0] = 21;
+                    return;
+                }
+                if (imageData.data[n + 1] > 0 && imageData.data[n + 1] < 255) {
+                    console.log('marked it here', i, j, imageData.data[n + 1]);
+                    imageData.data[n + 1] = 21;
+                    return;
+                }
+                if (imageData.data[n + 2] > 0 && imageData.data[n + 2] < 255) {
+                    console.log('marked it here', i, j, imageData.data[n + 2]);
+                    imageData.data[n + 2] = 21;
+                    return;
+                }
+                if (imageData.data[n + 3] > 0 && imageData.data[n + 3] < 255) {
+                    console.log('marked it here', i, j, imageData.data[n + 3]);
+                    imageData.data[n + 3] = 21;
+                    return;
+                }
+            }
+        }
+    };
+
+    var isCanvasMarked = function (imageData: ImageData, height: number, width: number) {
+        for (let i = 0; i < height; i++) {
+            for (let j = 0; j < width; j++) {
+                const n = ((i * (width * 4)) + (j * 4));
+                if (imageData.data[n + 0] == 21) {
+                    console.log('marked here', i, j, imageData.data[n + 0])
+                    return true;
+                }
+                else if (imageData.data[n + 1] == 21) {
+                    console.log('marked here', i, j, imageData.data[n + 1])
+                    return true;
+                }
+                else if (imageData.data[n + 2] == 21) {
+                    console.log('marked here', i, j, imageData.data[n + 2])
+                    return true;
+                }
+                else if (imageData.data[n + 3] == 21) {
+                    console.log('marked here', i, j, imageData.data[n + 3])
+                    return true;
+                }
+                if (imageData.data[n + 0] > 0 && imageData.data[n + 0] < 255) {
+                    return false;
+                }
+                if (imageData.data[n + 1] > 0 && imageData.data[n + 1] < 255) {
+                    return false;
+                }
+                if (imageData.data[n + 2] > 0 && imageData.data[n + 2] < 255) {
+                    return false;
+                }
+                if (imageData.data[n + 3] > 0 && imageData.data[n + 3] < 255) {
+                    return false;
+                }
+            }
+        };
+        return false
+    }
+
     var noisify = function (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
         if (context) {
             const shift = {
@@ -276,15 +354,19 @@ var canvasInject = function () {
             const height = canvas.height;
             if (width && height) {
                 const imageData = getImageData.apply(context, [0, 0, width, height]);
-                for (let i = 0; i < height; i++) {
-                    for (let j = 0; j < width; j++) {
-                        const n = ((i * (width * 4)) + (j * 4));
-                        imageData.data[n + 0] = imageData.data[n + 0] == 0 || imageData.data[n + 0] == 255 ? imageData.data[n + 0] : imageData.data[n + 0] + shift.r;
-                        imageData.data[n + 1] = imageData.data[n + 1] == 0 || imageData.data[n + 1] == 255 ? imageData.data[n + 1] : imageData.data[n + 1] + shift.g;
-                        imageData.data[n + 2] = imageData.data[n + 2] == 0 || imageData.data[n + 2] == 255 ? imageData.data[n + 2] : imageData.data[n + 2] + shift.b;
-                        imageData.data[n + 3] = imageData.data[n + 3] == 0 || imageData.data[n + 3] == 255 ? imageData.data[n + 3] : imageData.data[n + 3] + shift.a;
+                // check if data was noisified
+                if (!isCanvasMarked(imageData, height, width)) {
+                    for (let i = 0; i < height; i++) {
+                        for (let j = 0; j < width; j++) {
+                            const n = ((i * (width * 4)) + (j * 4));
+                            imageData.data[n + 0] = imageData.data[n + 0] == 0 || imageData.data[n + 0] == 255 ? imageData.data[n + 0] : imageData.data[n + 0] + shift.r;
+                            imageData.data[n + 1] = imageData.data[n + 1] == 0 || imageData.data[n + 1] == 255 ? imageData.data[n + 1] : imageData.data[n + 1] + shift.g;
+                            imageData.data[n + 2] = imageData.data[n + 2] == 0 || imageData.data[n + 2] == 255 ? imageData.data[n + 2] : imageData.data[n + 2] + shift.b;
+                            imageData.data[n + 3] = imageData.data[n + 3] == 0 || imageData.data[n + 3] == 255 ? imageData.data[n + 3] : imageData.data[n + 3] + shift.a;
+                        }
                     }
                 }
+                markCanvas(imageData, height, width)
                 context.putImageData(imageData, 0, 0);
             }
         }
@@ -313,8 +395,6 @@ var canvasInject = function () {
             return getImageData.apply(this, arguments);
         }
     });
-
-    // document.documentElement.dataset.cbscriptallow = true;
 };
 canvasInject();
 audiocontextInject();
