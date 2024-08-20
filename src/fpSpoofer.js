@@ -7,6 +7,8 @@ var canvasOffsetRed = 0,
     canvasOffsetBlue = 1,
     canvasOffsetAlpha = 0;
 
+var hasBattery = true;
+
 var webglValueIndexSeed = 0.234567654,
     webglValueOffset = 0.05;
 
@@ -247,6 +249,9 @@ audiocontextInject();
 webglInject();
 fontInject();
 specsInject();
+if (hasBattery) {
+    injectBattery();
+}
 canvas([1, 0, 0, -1, -1, 1, -1, 1, 1, -1]);
 
 // bot.incolumitas.com always uses webworker WorkerNavigator correspondence with original navigator's data(deviceMemory in our case),

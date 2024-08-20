@@ -430,6 +430,24 @@ bExtensionUtils.redirectToString = (proxyObj, originalObj) => {
     bExtensionUtils.variables.toStringRedirectObjs.push({ proxyObj, originalObj });
 };
 
+/**
+ * Helper function to modify the `toString()` result of the provided object.
+ *
+ * Note: Use `bExtensionUtils.redirectToString` instead when possible.
+ *
+ * There's a quirk in JS Proxies that will cause the `toString()` result to differ from the vanilla Object.
+ * If no string is provided we will generate a `[native code]` thing based on the name of the property object.
+ *
+ * @example
+ * patchToString(WebGLRenderingContext.prototype.getParameter, 'function getParameter() { [native code] }')
+ *
+ * @param {object} obj - The object for which to modify the `toString()` representation
+ * @param {string} str - Optional string used as a return value
+ */
+bExtensionUtils.patchToString = (obj, str = '') => {
+    bExtensionUtils.variables.toStringPatchObjs.push({ obj, str });
+};
+
 bExtensionUtils.replaceWithProxy = (obj, propName, handler) => {
     const originalObj = obj[propName];
     const _Reflect = bExtensionUtils.cache.Reflect;
@@ -537,4 +555,46 @@ bExtensionUtils.findRenderingContextIndex = (canvas) => {
 
     return { context: null, contextIndex: -1 };
 };
+
+// Proxy handler templates for re-usability
+bExtensionUtils.makeHandler = () => ({
+    // Used by simple `navigator` getter evasions
+    getterValue: value => ({
+        apply(target, thisArg, args) {
+            const _Reflect = bExtensionUtils.cache.Reflect;
+
+            // Let's fetch the value first, to trigger and escalate potential errors
+            // Illegal invocations like `navigator.__proto__.vendor` will throw here
+            _Reflect.apply(...arguments);
+            return value;
+        },
+    }),
+});
+
+/**
+ * All-in-one method to replace a getter with a JS Proxy using the provided Proxy handler with traps.
+ *
+ * @example
+ * replaceGetterWithProxy(Object.getPrototypeOf(navigator), 'vendor', proxyHandler)
+ *
+ * @param {object} obj - The object which has the property to replace
+ * @param {string} propName - The name of the property to replace
+ * @param {object} handler - The JS Proxy handler to use
+ */
+bExtensionUtils.replaceGetterWithProxy = (obj, propName, handler) => {
+    const desc = bExtensionUtils.cache.Object.getOwnPropertyDescriptor(obj, propName)
+    if (desc) {
+        const fn = bExtensionUtils.cache.Object.getOwnPropertyDescriptor(obj, propName).get;
+        const fnStr = fn.toString(); // special getter function string
+        const proxyObj = bExtensionUtils.newProxyInstance(fn, bExtensionUtils.stripProxyFromErrors(handler));
+
+        bExtensionUtils.replaceProperty(obj, propName, { get: proxyObj });
+        bExtensionUtils.patchToString(proxyObj, fnStr);
+
+        return true;
+    } else {
+        return false;
+    }
+};
+
 bExtensionUtils.init();
