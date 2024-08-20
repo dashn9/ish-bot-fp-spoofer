@@ -1,10 +1,4 @@
-var hardwareSpecs = {
-    memory: 4,
-    hardwareConcurrency: 4,
-};
 
-var referer = "";
-var browserVendor = "";
 var fontHeightOffset = 0;
 var fontWidthOffset = 0;
 
@@ -37,67 +31,6 @@ var webglParam36349 = 11;
 var webglParam33902 = 12;
 var webglParam33901 = 12;
 var webglParam37446 = "Intel(R) HD Graphics";
-
-function hashArrayTo255(array) {
-    let hash = 0;
-
-    for (let i = 0; i < array.length; i++) {
-        const element = array[i];
-        hash = (hash + element * (i + 1)) % 256;
-    }
-
-    return hash;
-}
-var specsInject = function () {
-    const originalDeviceMemoryDescriptor = Object.getOwnPropertyDescriptor(
-        Navigator.prototype,
-        "deviceMemory"
-    );
-    const originalVendorDescriptor = Object.getOwnPropertyDescriptor(
-        Navigator.prototype,
-        "vendor"
-    );
-    const originalRefererDescriptor = Object.getOwnPropertyDescriptor(
-        Document.prototype,
-        "referer"
-    );
-    Object.defineProperty(Navigator.prototype, "deviceMemory", {
-        get() {
-            return hardwareSpecs["memory"];
-        },
-    });
-    if (browserVendor) {
-        Object.defineProperty(Navigator.prototype, "vendor", {
-            get() {
-                return browserVendor;
-            },
-        });
-    }
-    if (referer) {
-        Object.defineProperty(Document.prototype, "referrer", {
-            get() {
-                return referer;
-            },
-        });
-    }
-
-    Object.getOwnPropertyDescriptor = (obj, prop) => {
-        if (obj === Navigator.prototype) {
-            switch (prop) {
-                case "deviceMemory":
-                    return originalDeviceMemoryDescriptor;
-                case "vendor":
-                    return originalVendorDescriptor;
-            }
-        } else if (obj === Document.prototype) {
-            switch (prop) {
-                case "referer":
-                    originalRefererDescriptor;
-            }
-        }
-        return Reflect.getOwnPropertyDescriptor(obj, prop);
-    };
-};
 
 var fontInject = function () {
     var rand = {
@@ -315,3 +248,6 @@ webglInject();
 fontInject();
 specsInject();
 canvas([1, 0, 0, -1, -1, 1, -1, 1, 1, -1]);
+
+// bot.incolumitas.com always uses webworker WorkerNavigator correspondence with original navigator's data(deviceMemory in our case),
+// It's not possible to influence the execution context of another webworker, i might look into spoofing deviceMemory even in another worker.

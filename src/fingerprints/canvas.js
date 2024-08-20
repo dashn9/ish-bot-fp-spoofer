@@ -296,6 +296,7 @@ const canvas = (canvasSalt) => {
             const imageUint8Data = Uint8ClampedArray.from(imageUint8DataOriginal);
 
             let saltIndex = 0;
+            // It doesn't pass the anthropogenic test on browser scan, it fails on mobile devices, perhaps look into it
             for (let y = 0; y < canvasHeight - 1; y += 2) {
                 for (let x = 0; x < canvasWidth - 1; x += 2) {
                     const pos = y * canvasWidth + x;

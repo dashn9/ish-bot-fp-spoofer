@@ -11,24 +11,11 @@
     {            
       "world": "MAIN",
       "all_frames": true,
-      "matches": [
-          "*://*/*"
-      ],
+      "matches": ["<all_urls>"],
       "match_origin_as_fallback": true,
       "match_about_blank": true,
       "run_at": "document_start",
-      "js": ["./fingerprints/canvas.js"]
-    },
-    {            
-      "world": "MAIN",
-      "all_frames": true,
-      "matches": [
-          "*://*/*"
-      ],
-      "match_origin_as_fallback": true,
-      "match_about_blank": true,
-      "run_at": "document_start",
-      "js": ["helpers/utils.js", "fingerprints/canvas.js", "fpSpoofer.js"]
+      "js": ["helpers/utils.js", "./fingerprints/specs.js", "fingerprints/canvas.js", "fpSpoofer.js"]
     }
   ],
   "host_permissions": [
