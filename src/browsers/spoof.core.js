@@ -6,6 +6,7 @@ const changeBrowserToSafari = () => {
 
     };
     ridChrome();
+    PropertyModifier.spoofProperty(Navigator.prototype, 'vendor', "Apple Computer, Inc.");
     const safari = { pushNotification: new SafariRemoteNotification() }
     safari.pushNotification.toString = () => ("[object SafariRemoteNotification]")
     PropertyModifier.addProperty(window, "safari", safari)
