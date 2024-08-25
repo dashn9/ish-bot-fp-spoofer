@@ -10,6 +10,7 @@ var canvasOffsetRed = 0,
 var hasBattery = true;
 
 var browser = "safari";
+var historyCount = 3;
 
 var webglValueIndexSeed = 0.234567654,
     webglValueOffset = 0.05;
@@ -251,6 +252,9 @@ audiocontextInject();
 webglInject();
 fontInject();
 specsInject();
+if (historyCount) {
+    spoofHistory(historyCount)
+}
 if (hasBattery) {
     injectBattery();
 }

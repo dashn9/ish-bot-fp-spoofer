@@ -7,7 +7,6 @@ const PropertyModifier = {
     init() {
         Object.getOwnPropertyDescriptor = (obj, prop) => {
             const deletedProps = this.deletedProperties.get(obj);
-            console.log(deletedProps, this.deletedProperties, obj, prop)
             if (deletedProps && deletedProps.has(prop)) {
                 return undefined;
             }
@@ -51,7 +50,6 @@ const PropertyModifier = {
 
     deleteProperty(obj, propertyName) {
         obj[propertyName] = undefined;
-        console.log(obj, propertyName)
         if (!this.deletedProperties.has(obj)) {
             this.deletedProperties.set(obj, new Set());
         }
