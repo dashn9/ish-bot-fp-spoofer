@@ -37,6 +37,11 @@ var webglParam33902 = 12;
 var webglParam33901 = 12;
 var webglParam37446 = "Intel(R) HD Graphics";
 
+if (browser == "safari") {
+    webglParam37445 = "Apple Inc."
+    webglParam37446 = "Apple GPU"
+}
+
 var fontInject = function () {
     var rand = {
         noise: function () {
