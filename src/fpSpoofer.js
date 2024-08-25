@@ -9,6 +9,8 @@ var canvasOffsetRed = 0,
 
 var hasBattery = true;
 
+var browser = "safari";
+
 var webglValueIndexSeed = 0.234567654,
     webglValueOffset = 0.05;
 
@@ -251,6 +253,10 @@ fontInject();
 specsInject();
 if (hasBattery) {
     injectBattery();
+}
+switch (browser) {
+    case "safari":
+        changeBrowserToSafari()
 }
 canvas([1, 0, 0, -1, -1, 1, -1, 1, 1, -1]);
 
