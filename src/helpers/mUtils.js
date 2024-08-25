@@ -27,6 +27,10 @@ const PropertyModifier = {
     },
 
     spoofProperty(obj, propertyName, value) {
+        if (value === undefined) {
+            this.deleteProperty(obj, propertyName)
+        }
+
         if (!this.originalDescriptors.has(obj)) {
             this.originalDescriptors.set(obj, {});
         }
