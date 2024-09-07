@@ -16,7 +16,6 @@ const injectBattery = (fakeBattery = generateRandomBatteryManagerData()) => {
     // TODO: If it is a charging state, the user's power should keep increasing to a certain time full.
     // It also needs to simulate the situation that the user has unplugged the power.
     if ('undefined' != typeof BatteryManager) {
-        console.log('battery')
         bExtensionUtils.replaceGetterWithProxy(
             BatteryManager.prototype,
             'charging',

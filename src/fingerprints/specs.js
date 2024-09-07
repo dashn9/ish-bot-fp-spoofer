@@ -1,14 +1,10 @@
 
-var hardwareSpecs = {
-    memory: 4,
-    hardwareConcurrency: 4,
-};
-
-var referer = "";
+var memory = 8;
+var referrer = "";
 
 var specsInject = function () {
-    PropertyModifier.spoofProperty(Navigator.prototype, "deviceMemory", hardwareSpecs["memory"]);
-    if (referer) {
-        PropertyModifier.spoofProperty(Document.prototype, "referrer", referer);
+    PropertyModifier.spoofProperty(Navigator.prototype, "deviceMemory", memory);
+    if (referrer) {
+        PropertyModifier.spoofProperty(Document.prototype, "referrer", referrer);
     }
 };
