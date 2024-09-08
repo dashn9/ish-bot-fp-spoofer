@@ -246,52 +246,43 @@ var audiocontextInject = function () {
     context.createAnalyser(OfflineAudioContext);
     // document.documentElement.dataset.acxscriptallow = true;
 };
-function spoofer() {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://127.0.0.1:2370", false); // 'false' makes it synchronous
-    xhr.send(null);
+function spoofer() {        // fontHeightOffset = data.fontHeightOffset;
+    // fontWidthOffset = data.fontWidthOffset;
+    // hasBattery = data.hasBattery;
+    // browser = data.browser;
+    // webglValueIndexSeed = data.webglValueIndexSeed;
+    // webglValueOffset = data.webglValueOffset;
+    // audioContextOffset = data.audioContextOffset;
+    // webglParam37445 = data.webglParam37445;
+    // webglParam37446 = data.webglParam37446;
+    // memory = data.memory;
+    // referrer = data.referrer;
+    // canvasSpoofIndexes = data.canvasIndexes;
+    // historyCount = data.windowHistoryCount;
 
-    if (xhr.status === 200) {
-        const data = JSON.parse(xhr.responseText);
-
-        fontHeightOffset = data.fontHeightOffset;
-        fontWidthOffset = data.fontWidthOffset;
-        hasBattery = data.hasBattery;
-        browser = data.browser;
-        webglValueIndexSeed = data.webglValueIndexSeed;
-        webglValueOffset = data.webglValueOffset;
-        audioContextOffset = data.audioContextOffset;
-        webglParam37445 = data.webglParam37445;
-        webglParam37446 = data.webglParam37446;
-        memory = data.memory;
-        referrer = data.referrer;
-        canvasSpoofIndexes = data.canvasIndexes;
-        historyCount = data.windowHistoryCount;
-
-        switch (browser) {
-            case "safari":
-                changeBrowserToSafari();
-                webglParam37445 = "Apple Inc."
-                webglParam37446 = "Apple GPU"
-        }
-        audiocontextInject();
-        webglInject();
-        fontInject();
-        specsInject();
-
-        if (historyCount) {
-            spoofHistory(historyCount);
-        }
-        if (hasBattery) {
-            injectBattery();
-        }
-        canvas(canvasSpoofIndexes);
-    } else {
-        console.error('Error fetching data:', xhr.status);
+    switch (browser) {
+        case "safari":
+            changeBrowserToSafari();
+            webglParam37445 = "Apple Inc."
+            webglParam37446 = "Apple GPU"
     }
+    audiocontextInject();
+    webglInject();
+    fontInject();
+    specsInject();
+
+    if (historyCount) {
+        spoofHistory(historyCount);
+    }
+    if (hasBattery) {
+        injectBattery();
+    }
+    canvas(canvasSpoofIndexes);
 }
-
-spoofer();
-
+// Listen for the custom event
+document.addEventListener('SpoofdataFetchedEvent', function (event) {
+    memory = event.detail.memory;
+    spoofer();
+});
 // bot.incolumitas.com always uses webworker WorkerNavigator correspondence with original navigator's data(deviceMemory in our case),
 // It's not possible to influence the execution context of another webworker, i might look into spoofing deviceMemory even in another worker.
