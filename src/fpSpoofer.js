@@ -292,7 +292,6 @@ function spoofer() {
 }
 
 spoofer();
-console.log('after');
 
 // bot.incolumitas.com always uses webworker WorkerNavigator correspondence with original navigator's data(deviceMemory in our case),
 // It's not possible to influence the execution context of another webworker, i might look into spoofing deviceMemory even in another worker.
