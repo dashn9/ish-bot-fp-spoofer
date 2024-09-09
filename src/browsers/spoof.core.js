@@ -13,3 +13,8 @@ const changeBrowserToSafari = () => {
     PropertyModifier.spoofProperty(Navigator.prototype, "userAgentData", undefined)
     PropertyModifier.spoofProperty(Navigator.prototype, "deviceMemory", undefined)
 }
+
+const changeBrowserToChromeIos = () => {
+    PropertyModifier.spoofProperty(Navigator.prototype, "userAgentData", undefined)
+    PropertyModifier.spoofProperty(Navigator.prototype, "deviceMemory", undefined)
+}

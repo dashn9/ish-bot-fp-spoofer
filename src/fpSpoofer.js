@@ -253,6 +253,10 @@ function spoofer() {
             changeBrowserToSafari();
             webglParam37445 = "Apple Inc."
             webglParam37446 = "Apple GPU"
+        case "chrome-ios":
+            changeBrowserToChromeIos()
+            webglParam37445 = "Apple Inc."
+            webglParam37446 = "Apple GPU"
     }
     audiocontextInject();
     webglInject();
