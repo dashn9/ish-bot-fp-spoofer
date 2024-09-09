@@ -248,6 +248,7 @@ var audiocontextInject = function () {
 };
 function spoofer() {
 
+    specsInject();
     switch (browser) {
         case "safari":
             changeBrowserToSafari();
@@ -261,7 +262,6 @@ function spoofer() {
     audiocontextInject();
     webglInject();
     fontInject();
-    specsInject();
 
     if (historyCount) {
         spoofHistory(historyCount);
