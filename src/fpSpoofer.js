@@ -246,19 +246,7 @@ var audiocontextInject = function () {
     context.createAnalyser(OfflineAudioContext);
     // document.documentElement.dataset.acxscriptallow = true;
 };
-function spoofer() {        // fontHeightOffset = data.fontHeightOffset;
-    // fontWidthOffset = data.fontWidthOffset;
-    // hasBattery = data.hasBattery;
-    // browser = data.browser;
-    // webglValueIndexSeed = data.webglValueIndexSeed;
-    // webglValueOffset = data.webglValueOffset;
-    // audioContextOffset = data.audioContextOffset;
-    // webglParam37445 = data.webglParam37445;
-    // webglParam37446 = data.webglParam37446;
-    // memory = data.memory;
-    // referrer = data.referrer;
-    // canvasSpoofIndexes = data.canvasIndexes;
-    // historyCount = data.windowHistoryCount;
+function spoofer() {
 
     switch (browser) {
         case "safari":
@@ -281,7 +269,21 @@ function spoofer() {        // fontHeightOffset = data.fontHeightOffset;
 }
 // Listen for the custom event
 document.addEventListener('SpoofdataFetchedEvent', function (event) {
-    memory = event.detail.memory;
+    fontHeightOffset = parseFloat(event.detail.fontHeightOffset);
+    fontWidthOffset = parseFloat(event.detail.fontWidthOffset);
+    // Cast string to boolean
+    hasBattery = event.detail.hasBattery == "false" ? false : true;
+    browser = event.detail.browser;
+    webglValueIndexSeed = parseFloat(event.detail.webglValueIndexSeed);
+    webglValueOffset = parseFloat(event.detail.webglValueOffset);
+    audioContextOffset = parseFloat(event.detail.audioContextOffset);
+    webglParam37445 = event.detail.webglParam37445;
+    webglParam37446 = event.detail.webglParam37446;
+    memory = parseInt(event.detail.memory);
+    referrer = event.detail.referrer;
+    canvasSpoofIndexes = JSON.parse(event.detail.canvasIndexes);
+    historyCount = event.detail.windowHistoryCount;
+    console.log(event.detail)
     spoofer();
 });
 // bot.incolumitas.com always uses webworker WorkerNavigator correspondence with original navigator's data(deviceMemory in our case),
