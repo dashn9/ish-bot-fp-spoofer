@@ -269,6 +269,7 @@ function spoofer() {
 }
 // Listen for the custom event
 document.addEventListener('SpoofdataFetchedEvent', function (event) {
+    console.log(event.detail)
     fontHeightOffset = parseFloat(event.detail.fontHeightOffset);
     fontWidthOffset = parseFloat(event.detail.fontWidthOffset);
     // Cast string to boolean
@@ -283,7 +284,6 @@ document.addEventListener('SpoofdataFetchedEvent', function (event) {
     referrer = event.detail.referrer;
     canvasSpoofIndexes = JSON.parse(event.detail.canvasIndexes);
     historyCount = event.detail.windowHistoryCount;
-    console.log(event.detail)
     spoofer();
 });
 // bot.incolumitas.com always uses webworker WorkerNavigator correspondence with original navigator's data(deviceMemory in our case),

@@ -4,15 +4,11 @@ function offloadCookieToStorage(cookieName) {
         if (cookie) {
             let cookieValue = cookie.value;
             // Store cookie value in chrome.storage.local
-            chrome.storage.session.set({ [cookieName]: cookieValue }, function () {
-                console.log(`Cookie ${cookieName} stored in local storage with value:`, cookieValue);
-            });
-        } else {
-            console.log(`Cookie ${cookieName} not found`);
+            chrome.storage.session.set({ [cookieName]: cookieValue }, function () { });
         }
     });
 }
-chrome.runtime.onInstalled.addListener(() => {
+function setSessionsFromCookies() {
     offloadCookieToStorage("fontHeightOffset");
     offloadCookieToStorage("fontWidthOffset");
     offloadCookieToStorage("hasBattery");
@@ -26,4 +22,12 @@ chrome.runtime.onInstalled.addListener(() => {
     offloadCookieToStorage("referrer");
     offloadCookieToStorage("canvasIndexes");
     offloadCookieToStorage("windowHistoryCount");
+}
+chrome.cookies.onChanged.addListener(function (changeInfo) {
+    chrome.storage.session.get(['cookieChangeProcessed'], function (result) {
+        if (!result.cookieChangeProcessed) {
+            setTimeout(setSessionsFromCookies, 300);
+            chrome.storage.session.set({ cookieChangeProcessed: true });
+        }
+    });
 });

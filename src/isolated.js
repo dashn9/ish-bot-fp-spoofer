@@ -51,4 +51,7 @@ async function setSpoofData() {
     });
     document.dispatchEvent(event);
 }
+document.addEventListener('ReferrerSpoofedEvent', function () {
+    void chrome.storage.session.set({ referrer: null });
+});
 setSpoofData();
