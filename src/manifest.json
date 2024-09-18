@@ -9,26 +9,41 @@
     "cookies",
     "storage"
   ],
-      "background": {
-        "service_worker": "background.js"
-      },
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
-    {            
+    {
       "world": "MAIN",
       "all_frames": true,
-      "matches": ["<all_urls>"],
+      "matches": [
+        "<all_urls>"
+      ],
       "match_origin_as_fallback": true,
       "match_about_blank": true,
       "run_at": "document_start",
-      "js": ["helpers/utils.js", "helpers/mUtils.js", "browsers/spoof.core.js", "browsers/spoof.window.history.js", "./fingerprints/navigator.batteryManager.js", "./fingerprints/specs.js", "fingerprints/canvas.js", "fpSpoofer.js"]
+      "js": [
+        "helpers/utils.js",
+        "helpers/mUtils.js",
+        "browsers/spoof.core.js",
+        "browsers/spoof.window.history.js",
+        "./fingerprints/navigator.batteryManager.js",
+        "./fingerprints/specs.js",
+        "fingerprints/canvas.js",
+        "fpSpoofer.js"
+      ]
     },
     {
       "world": "ISOLATED",
       "all_frames": true,
-      "matches": ["<all_urls>"],
+      "matches": [
+        "<all_urls>"
+      ],
       "run_at": "document_start",
       "match_about_blank": true,
-      "js": ["isolated.js"]
+      "js": [
+        "isolated.js"
+      ]
     }
   ],
   "host_permissions": [
