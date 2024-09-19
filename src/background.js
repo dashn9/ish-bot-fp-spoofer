@@ -16,7 +16,7 @@
 // chrome.cookies.set({
 //     url: "http://spoof-data.ish.bot.local",
 //     name: "browser",
-//     value: "chrome",
+//     value: "safari",
 // }, function (cookie) { });
 // chrome.cookies.set({
 //     url: "http://spoof-data.ish.bot.local",

@@ -1,5 +1,5 @@
 const ridChrome = () => {
-    PropertyModifier.deleteProperty(window, "chrome")
+    PropertyModifier.removeProperty(window, "chrome")
 }
 const changeBrowserToSafari = () => {
     class SafariRemoteNotification {
@@ -10,11 +10,12 @@ const changeBrowserToSafari = () => {
     const safari = { pushNotification: new SafariRemoteNotification() }
     safari.pushNotification.toString = () => ("[object SafariRemoteNotification]")
     PropertyModifier.addProperty(window, "safari", safari)
-    PropertyModifier.spoofProperty(Navigator.prototype, "userAgentData", undefined)
-    PropertyModifier.spoofProperty(Navigator.prototype, "deviceMemory", undefined)
+    PropertyModifier.deleteProperty(navigator, "userAgentData")
+    PropertyModifier.deleteProperty(navigator, "deviceMemory")
 }
 
 const changeBrowserToChromeIos = () => {
-    PropertyModifier.spoofProperty(Navigator.prototype, "userAgentData", undefined)
-    PropertyModifier.spoofProperty(Navigator.prototype, "deviceMemory", undefined)
+    ridChrome()
+    PropertyModifier.deleteProperty(navigator, "userAgentData")
+    PropertyModifier.deleteProperty(navigator, "deviceMemory")
 }
