@@ -273,6 +273,7 @@ function spoofer() {
 }
 // Listen for the custom event
 document.addEventListener('SpoofdataFetchedEvent', function (event) {
+    console.log(event.detail)
     fontHeightOffset = parseFloat(event.detail.fontHeightOffset);
     fontWidthOffset = parseFloat(event.detail.fontWidthOffset);
     // Cast string to boolean
