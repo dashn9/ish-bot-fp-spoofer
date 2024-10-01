@@ -286,7 +286,7 @@ document.addEventListener('SpoofdataFetchedEvent', function (event) {
     webglParam37446 = event.detail.webglParam37446;
     memory = parseInt(event.detail.memory);
     referrer = event.detail.referrer;
-    canvasSpoofIndexes = JSON.parse(event.detail.canvasIndexes);
+    canvasSpoofIndexes = typeof event.detail.canvasIndexes === "string" ? JSON.parse(event.detail.canvasIndexes) : event.detail.canvasIndexes;
     historyCount = event.detail.windowHistoryCount;
     spoofer();
 });

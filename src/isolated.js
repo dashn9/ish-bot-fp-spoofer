@@ -1,3 +1,15 @@
+function offloadToStorage(name, value) {
+    chrome.storage.session.set({ [name]: value }, function () {
+    });
+}
+window.addEventListener('ishBotSpoofData', (event) => {
+    const data = event.detail;
+    console.log("Data received via ishBotSpoofData:", data);
+    for (const [name, value] of Object.entries(data)) {
+        offloadToStorage(name, value);
+    }
+});
+
 async function setSpoofData() {
     var fontHeightOffset, fontWidthOffset, hasBattery, browser, webglValueIndexSeed, webglValueOffset,
         audioContextOffset, webglParam37445, webglParam37446, memory, referrer, canvasIndexes, windowHistoryCount;
@@ -55,3 +67,4 @@ document.addEventListener('ReferrerSpoofedEvent', function () {
     void chrome.storage.session.set({ referrer: null });
 });
 setSpoofData();
+
