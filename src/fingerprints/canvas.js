@@ -54,7 +54,6 @@
 // https://github.com/glennrp/libpng/blob/master/pngwrite.c#L358
 
 const canvas = (canvasSalt) => {
-    print
     const _Object = bExtensionUtils.cache.Object;
     const _Reflect = bExtensionUtils.cache.Reflect;
 

@@ -1,5 +1,3 @@
-
-
 var fontHeightOffset = 0;
 var fontWidthOffset = 0;
 
@@ -103,6 +101,9 @@ var webglInject = function () {
         spoof: {
             webgl: {
                 buffer: function (target) {
+                    if (webglValueIndexSeed === null || webglValueOffset === null) {
+                        return;
+                    }
                     var proto = target.prototype;
                     const bufferData = proto.bufferData;
                     Object.defineProperty(proto, "bufferData", {
@@ -126,6 +127,9 @@ var webglInject = function () {
                     });
                 },
                 parameter: function (target) {
+                    if (webglParam37445 === null || webglParam37446 === null) {
+                        return;
+                    }
                     var proto = target.prototype;
                     const getParameter = proto.getParameter;
                     Object.defineProperty(proto, "getParameter", {
@@ -247,7 +251,6 @@ var audiocontextInject = function () {
     // document.documentElement.dataset.acxscriptallow = true;
 };
 function spoofer() {
-
     specsInject();
     switch (browser) {
         case "safari":
@@ -269,7 +272,9 @@ function spoofer() {
     if (hasBattery) {
         injectBattery();
     }
-    canvas(canvasSpoofIndexes);
+    if (canvasSpoofIndexes !== null) {
+        canvas(canvasSpoofIndexes);
+    }
 }
 // Listen for the custom event
 document.addEventListener('SpoofdataFetchedEvent', function (event) {
