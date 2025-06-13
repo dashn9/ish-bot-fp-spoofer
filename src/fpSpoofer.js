@@ -101,7 +101,6 @@ var webglInject = function () {
         spoof: {
             webgl: {
                 buffer: function (target) {
-                    console.log(webglValueIndexSeed, webglValueOffset)
                     if (!webglValueIndexSeed || !webglValueOffset) {
                         return;
                     }
@@ -273,7 +272,7 @@ function spoofer() {
     if (hasBattery) {
         injectBattery();
     }
-    if (!canvasSpoofIndexes) {
+    if (canvasSpoofIndexes) {
         canvas(canvasSpoofIndexes);
     }
 }
