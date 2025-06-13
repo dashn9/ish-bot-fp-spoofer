@@ -101,7 +101,8 @@ var webglInject = function () {
         spoof: {
             webgl: {
                 buffer: function (target) {
-                    if (webglValueIndexSeed === null || webglValueOffset === null) {
+                    console.log(webglValueIndexSeed, webglValueOffset)
+                    if (!webglValueIndexSeed || !webglValueOffset) {
                         return;
                     }
                     var proto = target.prototype;
@@ -127,7 +128,7 @@ var webglInject = function () {
                     });
                 },
                 parameter: function (target) {
-                    if (webglParam37445 === null || webglParam37446 === null) {
+                    if (!webglParam37445 || !webglParam37446) {
                         return;
                     }
                     var proto = target.prototype;
@@ -272,7 +273,7 @@ function spoofer() {
     if (hasBattery) {
         injectBattery();
     }
-    if (canvasSpoofIndexes !== null) {
+    if (!canvasSpoofIndexes) {
         canvas(canvasSpoofIndexes);
     }
 }
